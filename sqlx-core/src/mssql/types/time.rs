@@ -1,5 +1,4 @@
 use crate::decode::Decode;
-use crate::encode::{Encode, IsNull};
 use crate::error::BoxDynError;
 use crate::mssql::protocol::type_info::{DataType, TypeInfo};
 use crate::mssql::{Mssql, MssqlTypeInfo, MssqlValueRef};
@@ -9,7 +8,6 @@ use std::ops::Sub;
 use binary_reader::Endian;
 use std::time::SystemTime;
 use chrono;
-use chrono::{NaiveDateTime, Utc};
 
 impl Type<Mssql> for SystemTime {
     fn type_info() -> MssqlTypeInfo {
@@ -53,7 +51,7 @@ impl Type<Mssql> for Cow<'_, SystemTime> {
 
 impl<'r> Decode<'r, Mssql> for SystemTime {
     fn decode(value: MssqlValueRef<'r>) -> Result<Self, BoxDynError> {
-        let mut buf = value.as_bytes()?;
+        let buf = value.as_bytes()?;
         let rlen = buf.len();
         let s = match rlen {
             0 => SystemTime::UNIX_EPOCH,
