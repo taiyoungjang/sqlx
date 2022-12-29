@@ -514,6 +514,7 @@ impl TypeInfo {
             DataType::Char => "CHAR",
             DataType::BigChar => "BIGCHAR",
             DataType::NChar => "NCHAR",
+            DataType::DateTimeOffsetN => "DATETIMEOFFSET",
 
             _ => unimplemented!("name: unsupported data type {:?}", self.ty),
         }
@@ -551,7 +552,8 @@ impl TypeInfo {
             | DataType::BigVarChar
             | DataType::Char
             | DataType::BigChar
-            | DataType::NChar => {
+            | DataType::NChar
+            | DataType::DateTimeOffsetN => {
                 // name
                 s.push_str(match self.ty {
                     DataType::VarChar => "varchar",
@@ -560,6 +562,7 @@ impl TypeInfo {
                     DataType::Char => "char",
                     DataType::BigChar => "bigchar",
                     DataType::NChar => "nchar",
+                    DataType::DateTimeOffsetN => "datetimeoffset",
 
                     _ => unreachable!(),
                 });
