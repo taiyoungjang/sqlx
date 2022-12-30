@@ -66,8 +66,8 @@ impl<'r> Decode<'r, Mssql> for SystemTime {
                 let offset = chrono::Duration::minutes(offset as i64);
                 let naive = chrono::NaiveDateTime::new(date, time).sub(offset);
                 //let datetime = chrono::DateTime::<Utc>::from_utc(naive, Utc);
-                //println!("datetime: {}", datetime);
-                SystemTime::UNIX_EPOCH + std::time::Duration::new(naive.timestamp() as u64, 0 as u32)
+                let timestamp = i64::clamp(naive.timestamp(), 0, i64::MAX as i64);
+                SystemTime::UNIX_EPOCH + std::time::Duration::new(timestamp as u64, 0 as u32)
             }
         };
         Ok(s)
