@@ -188,7 +188,16 @@ impl TypeInfo {
                 }
             }
 
-            DataType::Guid
+            DataType::Guid => {
+                Self {
+                    ty,
+                    size: 16,
+                    scale: 0,
+                    precision: 0,
+                    collation: None,
+                }
+            }
+
             | DataType::IntN
             | DataType::BitN
             | DataType::FloatN
@@ -383,6 +392,7 @@ impl TypeInfo {
     pub(crate) fn put_value<'q, T: Encode<'q, Mssql>>(&self, buf: &mut Vec<u8>, value: T) {
         match self.ty {
             DataType::Null
+            | DataType::Guid
             | DataType::TinyInt
             | DataType::Bit
             | DataType::SmallInt
@@ -397,8 +407,7 @@ impl TypeInfo {
                 self.put_fixed_value(buf, value);
             }
 
-            DataType::Guid
-            | DataType::IntN
+            DataType::IntN
             | DataType::Decimal
             | DataType::Numeric
             | DataType::BitN
@@ -515,6 +524,7 @@ impl TypeInfo {
             DataType::BigChar => "BIGCHAR",
             DataType::NChar => "NCHAR",
             DataType::DateTimeOffsetN => "DATETIMEOFFSET",
+            DataType::Guid => "UNIQUEIDENTIFIER",
 
             _ => unimplemented!("name: unsupported data type {:?}", self.ty),
         }
@@ -547,7 +557,8 @@ impl TypeInfo {
                 n => unreachable!("invalid size {} for float", n),
             }),
 
-            DataType::VarChar
+            DataType::Guid
+            | DataType::VarChar
             | DataType::NVarChar
             | DataType::BigVarChar
             | DataType::Char
@@ -556,6 +567,7 @@ impl TypeInfo {
             | DataType::DateTimeOffsetN => {
                 // name
                 s.push_str(match self.ty {
+                    DataType::Guid => "uniqueidentifier",
                     DataType::VarChar => "varchar",
                     DataType::NVarChar => "nvarchar",
                     DataType::BigVarChar => "bigvarchar",
