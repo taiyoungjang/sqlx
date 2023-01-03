@@ -525,6 +525,7 @@ impl TypeInfo {
             DataType::NChar => "NCHAR",
             DataType::DateTimeOffsetN => "DATETIMEOFFSET",
             DataType::Guid => "UNIQUEIDENTIFIER",
+            DataType::BigBinary => "BINARY",
 
             _ => unimplemented!("name: unsupported data type {:?}", self.ty),
         }
@@ -558,6 +559,10 @@ impl TypeInfo {
             }),
 
             DataType::Guid
+            | DataType::Binary
+            | DataType::VarBinary
+            | DataType::BigBinary
+            | DataType::BigVarBinary
             | DataType::VarChar
             | DataType::NVarChar
             | DataType::BigVarChar
@@ -568,6 +573,10 @@ impl TypeInfo {
                 // name
                 s.push_str(match self.ty {
                     DataType::Guid => "uniqueidentifier",
+                    DataType::Binary => "binary",
+                    DataType::VarBinary => "varbinary",
+                    DataType::BigBinary => "binary",
+                    DataType::BigVarBinary => "varbinary",
                     DataType::VarChar => "varchar",
                     DataType::NVarChar => "nvarchar",
                     DataType::BigVarChar => "bigvarchar",
